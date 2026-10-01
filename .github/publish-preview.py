@@ -27,7 +27,7 @@ def api(path, method='GET', payload=None):
         data=json.dumps(payload).encode() if payload is not None else None, method=method,
         headers={'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json', 'User-Agent': 'Notara-release-transfer/1.0'})
     with urllib.request.urlopen(request, timeout=60) as response:
-        return json.load(response)
+        return None if response.status == 204 else json.load(response)
 
 try:
     # Read the temporary URL from the event file, never from interpolated shell
@@ -89,8 +89,16 @@ try:
         stage = 'upload ' + path.name
         existing = {asset['name']: asset for asset in api(f'/releases/{RELEASE}/assets')}
         if path.name in existing:
-            assert existing[path.name]['digest'] == 'sha256:' + expected[path.name]
-            continue
+            asset = existing[path.name]
+            if asset['state'] == 'starter' and asset.get('digest') is None:
+                # Only abandon an incomplete reservation for this exact verified
+                # file in this still-private draft. Never remove an uploaded file.
+                assert api(f'/releases/{RELEASE}')['draft']
+                api(f"/releases/assets/{asset['id']}", 'DELETE')
+                print('Removed incomplete upload:', path.name, flush=True)
+            else:
+                assert asset['state'] == 'uploaded' and asset['digest'] == 'sha256:' + expected[path.name]
+                continue
         connection = http.client.HTTPSConnection('uploads.github.com', timeout=180)
         with path.open('rb') as handle:
             connection.request('POST', f'/repos/{REPO}/releases/{RELEASE}/assets?name=' + urllib.parse.quote(path.name), body=handle,
