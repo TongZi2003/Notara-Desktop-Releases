@@ -94,6 +94,7 @@ try:
                 # Only abandon an incomplete reservation for this exact verified
                 # file in this still-private draft. Never remove an uploaded file.
                 assert api(f'/releases/{RELEASE}')['draft']
+                assert asset['id'] == 603680710 and asset['size'] == path.stat().st_size
                 api(f"/releases/assets/{asset['id']}", 'DELETE')
                 print('Removed incomplete upload:', path.name, flush=True)
             else:
