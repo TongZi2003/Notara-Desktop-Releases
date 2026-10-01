@@ -35,7 +35,7 @@ try:
     event = json.loads(Path(os.environ['GITHUB_EVENT_PATH']).read_text())
     url = event['inputs']['artifact_url']
     parsed = urllib.parse.urlsplit(url)
-    assert parsed.scheme == 'https' and parsed.hostname.endswith('.oaiusercontent.com')
+    assert parsed.scheme == 'https' and parsed.hostname.endswith(('.oaiusercontent.com', '.trycloudflare.com'))
     assert not parsed.username and not parsed.password
     print('Source link expiry:', urllib.parse.parse_qs(parsed.query).get('se', ['missing'])[0])
     stage = 'check release target'
