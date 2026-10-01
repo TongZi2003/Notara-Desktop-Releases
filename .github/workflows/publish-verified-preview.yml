@@ -1,0 +1,23 @@
+name: Publish verified Windows preview
+on:
+  workflow_dispatch:
+    inputs:
+      artifact_url:
+        description: Temporary download URL for the already verified preview.5 installer archive
+        required: true
+        type: string
+permissions:
+  contents: write
+jobs:
+  publish:
+    if: github.repository == 'TongZi2003/Notara-Desktop-Releases'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify pinned archive and installer, upload, verify server hashes, publish prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .github/publish-preview.py
