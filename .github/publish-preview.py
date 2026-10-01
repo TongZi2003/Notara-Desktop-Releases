@@ -37,6 +37,7 @@ try:
     parsed = urllib.parse.urlsplit(url)
     assert parsed.scheme == 'https' and parsed.hostname.endswith('.oaiusercontent.com')
     assert not parsed.username and not parsed.password
+    print('Source link expiry:', urllib.parse.parse_qs(parsed.query).get('se', ['missing'])[0])
     stage = 'check release target'
     release = api(f'/releases/{RELEASE}')
     assert release['draft'] and release['tag_name'] == 'v' + VERSION and release['prerelease']
@@ -112,4 +113,9 @@ try:
 except Exception as error:
     # Never echo a credential-bearing download URL or an HTTP request object.
     print('Transfer failed at', stage, type(error).__name__, getattr(error, 'code', ''), file=sys.stderr)
+    if stage == 'download pinned archive' and hasattr(error, 'read'):
+        import re
+        code = re.search(r'<Code>([A-Za-z0-9_]+)</Code>', error.read(8192).decode('utf-8', errors='replace'))
+        if code:
+            print('Storage error code:', code.group(1), file=sys.stderr)
     sys.exit(1)
