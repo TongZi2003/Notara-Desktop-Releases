@@ -25,7 +25,7 @@ def digest(path):
 def api(path, method='GET', payload=None):
     request = urllib.request.Request('https://api.github.com/repos/' + REPO + path,
         data=json.dumps(payload).encode() if payload is not None else None, method=method,
-        headers={'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json'})
+        headers={'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json', 'User-Agent': 'Notara-release-transfer/1.0'})
     with urllib.request.urlopen(request, timeout=60) as response:
         return json.load(response)
 
@@ -94,7 +94,7 @@ try:
         connection = http.client.HTTPSConnection('uploads.github.com', timeout=180)
         with path.open('rb') as handle:
             connection.request('POST', f'/repos/{REPO}/releases/{RELEASE}/assets?name=' + urllib.parse.quote(path.name), body=handle,
-                headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/octet-stream', 'Content-Length': str(path.stat().st_size)})
+                headers={'Authorization': 'Bearer ' + token, 'Content-Type': 'application/octet-stream', 'Content-Length': str(path.stat().st_size), 'User-Agent': 'Notara-release-transfer/1.0'})
             response = connection.getresponse()
             assert response.status == 201, 'asset upload HTTP ' + str(response.status)
             uploaded = json.loads(response.read())
@@ -113,6 +113,8 @@ try:
 except Exception as error:
     # Never echo a credential-bearing download URL or an HTTP request object.
     print('Transfer failed at', stage, type(error).__name__, getattr(error, 'code', ''), file=sys.stderr)
+    if isinstance(error, AssertionError) and str(error).startswith('asset upload HTTP '):
+        print(str(error), file=sys.stderr)
     if stage == 'download pinned archive' and hasattr(error, 'read'):
         import re
         code = re.search(r'<Code>([A-Za-z0-9_]+)</Code>', error.read(8192).decode('utf-8', errors='replace'))
