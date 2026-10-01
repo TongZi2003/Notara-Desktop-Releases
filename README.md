@@ -8,9 +8,11 @@ Notara 是装在自己电脑上的 AI 学习伙伴。这里是桌面版的官方
 
 ## 当前状态
 
-桌面版处于预览准备阶段，**尚未发布可下载的安装包**。macOS Apple 芯片版本正在准备公开安装包，Windows 版本仍在适配与安装验证中。具体可下载的系统、架构和安装方式会在每次 Release 中注明。
+首个 **Windows 10/11 x64 预览版 0.1.0-preview.5** 已提供下载：[安装程序与版本说明](https://github.com/TongZi2003/Notara-Desktop-Releases/releases/tag/v0.1.0-preview.5)。macOS 与 Windows ARM 原生版本暂未公开。
 
-发布后，请从 Releases 选择对应系统的安装包，并阅读该版本的安装说明。这里不会要求你下载或构建应用源码。
+下载 Release 附件中的 `.exe` 安装程序，并阅读版本说明。此预览版没有商业代码签名，Windows 可能显示“未知发布者”或 SmartScreen 提示；请核对官方来源与随包 SHA256 清单，遵守设备管理策略，无需关闭系统安全保护。预览版暂采用手动下载安装更新。
+
+安装器包含默认学习所需运行时，无需预装 DSH、Node.js 或 Git。使用 Bash 命令需要额外配置本机 Docker Linux 引擎与固定执行镜像。
 
 ## 模型与资料
 
