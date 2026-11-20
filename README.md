@@ -8,9 +8,10 @@ Notara 是装在自己电脑上的 AI 学习伙伴。这里是桌面版的官方
 
 ## 当前状态
 
-首个面向首轮内测的 **Windows 10/11 x64 预览版 0.1.0-preview.7** 已提供下载：[安装程序与版本说明](https://github.com/TongZi2003/Notara-Desktop-Releases/releases/tag/v0.1.0-preview.7)。macOS 与 Windows ARM 原生版本暂未公开。
+面向首轮内测的 **macOS Apple Silicon (`arm64` DMG)** 与 **Windows 10/11 (`x64` Setup.exe)** 预览版 `0.1.0-preview.7` 均已提供下载：[安装程序与版本说明](https://github.com/TongZi2003/Notara-Desktop-Releases/releases/tag/v0.1.0-preview.7)。Windows ARM 原生版与 Intel Mac 公证版暂未发布。
 
-下载 Release 附件中的 `.exe` 安装程序，并阅读版本说明。此预览版没有商业代码签名，Windows 可能显示“未知发布者”或 SmartScreen 提示；请先核对官方来源与随包 `SHA256SUMS.txt` 校验值，再决定是否运行（受组织策略严格管控的电脑可能拦截未签名程序）。预览版暂采用手动下载安装更新。
+- **macOS 首次启动提示**：本内测包采用本地 ad-hoc 签名、暂未绑定 Apple 公证，打开 DMG 将 `Notara.app` 拖入「应用程序」后，若提示「无法验证开发者 / 未打开」，请先核对随包 `SHA256SUMS.txt` 校验和，再在终端执行 `xattr -cr /Applications/Notara.app`（或在「系统设置 -> 隐私与安全性」点击「仍要打开」）。
+- **Windows 首次启动提示**：本预览版没有商业代码签名，Windows 若弹出“未知发布者”或 SmartScreen 提示，请先核对随包 `SHA256SUMS.txt` 校验值，再点击「更多信息 -> 仍要运行」（受组织策略严格管控的电脑可能拦截未签名程序）。预览版暂采用手动下载安装更新。
 
 安装器包含默认学习、PDF 渲染及离线公式字体所需运行时，无需预装 DSH、Node.js 或 Git。使用 Bash 命令需要额外配置本机 Docker Linux 引擎与固定执行镜像。
 
